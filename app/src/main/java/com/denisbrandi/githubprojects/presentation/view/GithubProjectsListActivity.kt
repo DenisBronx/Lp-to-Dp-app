@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.denisbrandi.githubprojects.R
 import com.denisbrandi.githubprojects.databinding.ActivityProjectsListBinding
 import com.denisbrandi.githubprojects.domain.model.*
@@ -19,7 +20,13 @@ class GithubProjectsListActivity : AppCompatActivity() {
     @Inject
     lateinit var githubProjectsListViewModel: GithubProjectsListViewModel
 
+    @Inject
+    lateinit var projectsListRouter: ProjectsListRouter
+
     private lateinit var binding: ActivityProjectsListBinding
+    private val adapter: GithubProjectsAdapter = GithubProjectsAdapter {
+        projectsListRouter.openProjectDetail(binding.organisationInput.text.toString(), it.id)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +39,13 @@ class GithubProjectsListActivity : AppCompatActivity() {
         binding.loadDataButton.setOnClickListener {
             githubProjectsListViewModel.loadProjects(binding.organisationInput.text.toString())
         }
+
+        setUpList()
+    }
+
+    private fun setUpList() {
+        binding.projectsRecyclerView.layoutManager = LinearLayoutManager(this)
+        binding.projectsRecyclerView.adapter = adapter
     }
 
     private fun drawState(state: GithubProjectsListViewModel.State) {
@@ -69,6 +83,11 @@ class GithubProjectsListActivity : AppCompatActivity() {
     }
 
     private fun drawContentState(githubProjects: List<GithubProject>) {
+        binding.projectsRecyclerView.isVisible = true
+        adapter.submitList(githubProjects)
+    }
 
+    interface ProjectsListRouter {
+        fun openProjectDetail(organisation: String, projectId: String)
     }
 }

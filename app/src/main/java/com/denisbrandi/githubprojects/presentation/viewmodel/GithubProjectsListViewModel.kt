@@ -8,12 +8,12 @@ import com.denisbrandi.githubprojects.presentation.viewmodel.GithubProjectsListV
 import kotlinx.coroutines.launch
 
 class GithubProjectsListViewModel(
-    private val getProjectsForOrganisation: GetProjectsForOrganisation
+    private val getProjectsForOrganisation: GetProjectsForOrganisation,
+    private val isValidOrganisation: (organisation: String) -> Boolean
 ) : BaseViewModel<State>(Idle) {
 
     fun loadProjects(organisation: String) {
-
-        if (organisation.isEmpty()) {
+        if (!isValidOrganisation(organisation)) {
             setState(InvalidInput)
             return
         }

@@ -1,6 +1,7 @@
 package com.denisbrandi.githubprojects.presentation.viewmodel
 
 import com.denisbrandi.githubprojects.domain.model.*
+import com.denisbrandi.githubprojects.domain.service.OrganisationValidator
 import com.denisbrandi.githubprojects.presentation.viewmodel.GithubProjectsListViewModel.State.*
 import com.denisbrandi.prelude.Answer
 import com.denisbrandi.testutil.*
@@ -17,7 +18,10 @@ class GithubProjectsListViewModelTest {
     }
 
     private val fakeGetProjectsForOrganisation = FakeGetProjectsForOrganisation()
-    private val sut = GithubProjectsListViewModel(fakeGetProjectsForOrganisation::invoke)
+    private val sut = GithubProjectsListViewModel(
+        fakeGetProjectsForOrganisation::invoke,
+        OrganisationValidator::isValidOrganisation
+    )
     private val stateObserver = sut.state.test()
 
     @Test
@@ -48,7 +52,6 @@ class GithubProjectsListViewModelTest {
     }
 
     private class FakeGetProjectsForOrganisation {
-
         lateinit var result: Answer<List<GithubProject>, GetProjectsError>
 
         fun invoke(organisation: String): Answer<List<GithubProject>, GetProjectsError> {

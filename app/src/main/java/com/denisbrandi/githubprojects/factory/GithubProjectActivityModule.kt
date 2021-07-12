@@ -3,7 +3,8 @@ package com.denisbrandi.githubprojects.factory
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import com.denisbrandi.githubprojects.domain.repository.GithubProjectRepository
-import com.denisbrandi.githubprojects.presentation.viewmodel.*
+import com.denisbrandi.githubprojects.domain.service.OrganisationValidator
+import com.denisbrandi.githubprojects.presentation.viewmodel.GithubProjectsListViewModel
 import dagger.*
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ActivityComponent
@@ -19,7 +20,10 @@ object GithubProjectActivityModule {
         githubProjectRepository: GithubProjectRepository
     ): GithubProjectsListViewModel {
         return (context as AppCompatActivity).getViewModel {
-            GithubProjectsListViewModel(githubProjectRepository::getProjectsForOrganisation)
+            GithubProjectsListViewModel(
+                githubProjectRepository::getProjectsForOrganisation,
+                OrganisationValidator::isValidOrganisation
+            )
         }
     }
 
