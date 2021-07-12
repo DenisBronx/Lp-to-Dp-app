@@ -12,6 +12,12 @@ class GithubProjectsListViewModel(
 ) : BaseViewModel<State>(Idle) {
 
     fun loadProjects(organisation: String) {
+
+        if (organisation.isEmpty()) {
+            setState(InvalidInput)
+            return
+        }
+
         setState(Loading)
 
         viewModelScope.launch {
@@ -32,6 +38,7 @@ class GithubProjectsListViewModel(
         object Loading : State()
         data class Content(val githubProjects: List<GithubProject>) : State()
         data class Error(val getProjectsError: GetProjectsError) : State()
+        object InvalidInput : State()
     }
 
 }

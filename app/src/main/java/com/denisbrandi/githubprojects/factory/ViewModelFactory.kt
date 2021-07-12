@@ -1,4 +1,4 @@
-package com.denisbrandi.githubprojects.presentation.viewmodel
+package com.denisbrandi.githubprojects.factory
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.*

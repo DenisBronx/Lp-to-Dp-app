@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Github Projects</string>
+    <string name="enter_organisation_name">Enter Organisation name</string>
+    <string name="load">Load</string>
+    <string name="retry">Retry</string>
+    <string name="no_projects_error_message">No projects could be found for this organisation name</string>
+    <string name="generic_projects_error_message">Something went wrong. Try again later</string>
+    <string name="invalid_organisation_input">The name of the organisation you entered is invalid</string>
 </resources>

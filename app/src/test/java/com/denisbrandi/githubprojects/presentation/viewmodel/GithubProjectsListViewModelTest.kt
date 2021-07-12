@@ -38,6 +38,15 @@ class GithubProjectsListViewModelTest {
         stateObserver.assertValues(Idle, Loading, Error(GetProjectsError.NoProjectFound))
     }
 
+    @Test
+    fun `loadProjects SHOULD emit InvalidInput WHEN organisation is empty`() {
+        fakeGetProjectsForOrganisation.result = Answer.Error(GetProjectsError.NoProjectFound)
+
+        sut.loadProjects("")
+
+        stateObserver.assertValues(Idle, InvalidInput)
+    }
+
     private class FakeGetProjectsForOrganisation {
 
         lateinit var result: Answer<List<GithubProject>, GetProjectsError>
