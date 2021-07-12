@@ -1,10 +1,15 @@
 package com.denisbrandi.githubprojects.presentation.view
 
+import android.annotation.SuppressLint
 import android.content.*
 import android.os.Bundle
+import android.text.Spanned
+import android.text.method.LinkMovementMethod
 import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.text.HtmlCompat
+import androidx.core.text.HtmlCompat.FROM_HTML_MODE_COMPACT
 import androidx.core.view.isVisible
 import com.denisbrandi.githubprojects.R
 import com.denisbrandi.githubprojects.databinding.ActivityProjectDetailsBinding
@@ -78,12 +83,31 @@ class GithubProjectDetailActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun drawContentState(githubProjectDetails: GithubProjectDetails) {
         binding.content.isVisible = true
-        binding.labelId.text = getString(R.string.id, githubProjectDetails.id)
-        binding.labelName.text = getString(R.string.name, githubProjectDetails.name)
-        binding.labelFullName.text = getString(R.string.full_name, githubProjectDetails.fullName)
+        binding.labelId.text = getString(R.string.id).htmlText(githubProjectDetails.id)
+        binding.labelName.text = getString(R.string.name).htmlText(githubProjectDetails.name)
+        binding.labelFullName.text =
+            getString(R.string.full_name).htmlText(githubProjectDetails.fullName)
+        binding.labelDescription.text =
+            getString(R.string.description).htmlText(githubProjectDetails.description)
+        binding.labelUrl.text = getString(R.string.url).htmlLink(githubProjectDetails.url)
+        binding.labelUrl.movementMethod = LinkMovementMethod.getInstance()
+        binding.labelStargazers.text = getString(R.string.stargazers).htmlText(githubProjectDetails.stargazers.toString())
+        binding.labelWatchers.text = getString(R.string.watchers).htmlText(githubProjectDetails.watchers.toString())
         ImageLoader.loadImage(binding.image, githubProjectDetails.imageUrl)
+    }
+
+    private fun String.htmlText(value: String): Spanned {
+        return HtmlCompat.fromHtml("$this<br/><b>$value</b>", FROM_HTML_MODE_COMPACT)
+    }
+
+    private fun String.htmlLink(value: String): Spanned {
+        return HtmlCompat.fromHtml(
+            "$this<br/><b><a href=\"$value\">$value</a></b>",
+            FROM_HTML_MODE_COMPACT
+        )
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

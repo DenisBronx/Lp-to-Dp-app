@@ -6,8 +6,12 @@
     <string name="no_projects_error_message">No projects could be found for this organisation name</string>
     <string name="generic_projects_error_message">Something went wrong. Try again later</string>
     <string name="invalid_organisation_input">The name of the organisation you entered is invalid</string>
-    <string name="id">ID: %s</string>
-    <string name="name">Name: %s</string>
-    <string name="full_name">Full Name: %s</string>
+    <string name="id">ID:</string>
+    <string name="name">Name:</string>
+    <string name="full_name">Full Name:</string>
+    <string name="description">Description:</string>
+    <string name="url">Url:</string>
+    <string name="stargazers">Stargazers:</string>
+    <string name="watchers">Watchers:</string>
     <string name="full_hint">Insert an organisation name with at least 2 chars</string>
 </resources>

@@ -5,5 +5,8 @@ data class GithubProjectDetails(
     val name: String = "",
     val fullName: String = "",
     val description: String = "",
-    val imageUrl: String = ""
+    val imageUrl: String = "",
+    val url: String = "",
+    val stargazers: Int = 0,
+    val watchers: Int = 0
 )

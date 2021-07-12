@@ -11,7 +11,10 @@ object GithubProjectDetailsMapper {
             name = jsonGithubProjectDetails.name.orEmpty(),
             fullName = jsonGithubProjectDetails.fullName.orEmpty(),
             description = jsonGithubProjectDetails.description.orEmpty(),
-            imageUrl = jsonGithubProjectDetails.owner?.avatarUrl.orEmpty()
+            imageUrl = jsonGithubProjectDetails.owner?.avatarUrl.orEmpty(),
+            url = jsonGithubProjectDetails.url.orEmpty(),
+            stargazers = jsonGithubProjectDetails.stargazers ?: 0,
+            watchers = jsonGithubProjectDetails.watchers ?: 0
         )
     }
 

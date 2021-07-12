@@ -7,7 +7,7 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/project_item_card_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/card_height"
         android:layout_marginStart="@dimen/grid_2"
         android:layout_marginTop="@dimen/grid"
         android:layout_marginEnd="@dimen/grid_2"
@@ -18,6 +18,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <ImageView

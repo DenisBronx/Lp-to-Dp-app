@@ -15,7 +15,10 @@ class GithubProjectDetailsMapperTest {
             name = "name",
             fullName = "fullName",
             description = "desc",
-            owner = JsonOwner("imageUrl")
+            owner = JsonOwner("imageUrl"),
+            url = "url",
+            stargazers = 5,
+            watchers = 6
         )
 
         val result = sut.map(input)
@@ -26,6 +29,9 @@ class GithubProjectDetailsMapperTest {
             assertThat(fullName).isEqualTo("fullName")
             assertThat(description).isEqualTo("desc")
             assertThat(imageUrl).isEqualTo("imageUrl")
+            assertThat(url).isEqualTo("url")
+            assertThat(stargazers).isEqualTo(5)
+            assertThat(watchers).isEqualTo(6)
         }
     }
 
@@ -41,6 +47,9 @@ class GithubProjectDetailsMapperTest {
             assertThat(fullName).isEmpty()
             assertThat(description).isEmpty()
             assertThat(imageUrl).isEmpty()
+            assertThat(url).isEmpty()
+            assertThat(stargazers).isEqualTo(0)
+            assertThat(watchers).isEqualTo(0)
         }
     }
 }
