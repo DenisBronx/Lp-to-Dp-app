@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import com.denisbrandi.githubprojects.domain.repository.GithubProjectRepository
 import com.denisbrandi.githubprojects.domain.service.OrganisationValidator
-import com.denisbrandi.githubprojects.presentation.viewmodel.GithubProjectsListViewModel
+import com.denisbrandi.githubprojects.presentation.viewmodel.*
 import dagger.*
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ActivityComponent
@@ -23,6 +23,18 @@ object GithubProjectActivityModule {
             GithubProjectsListViewModel(
                 githubProjectRepository::getProjectsForOrganisation,
                 OrganisationValidator::isValidOrganisation
+            )
+        }
+    }
+
+    @Provides
+    fun provideGithubProjectDetailsViewModel(
+        @ActivityContext context: Context,
+        githubProjectRepository: GithubProjectRepository
+    ): GithubProjectDetailsViewModel {
+        return (context as AppCompatActivity).getViewModel {
+            GithubProjectDetailsViewModel(
+                githubProjectRepository::getProjectDetails
             )
         }
     }

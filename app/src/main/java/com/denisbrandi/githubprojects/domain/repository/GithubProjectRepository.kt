@@ -7,4 +7,9 @@ interface GithubProjectRepository {
 
     suspend fun getProjectsForOrganisation(organisation: String): Answer<List<GithubProject>, GetProjectsError>
 
+    suspend fun getProjectDetails(
+        owner: String,
+        repositoryName: String
+    ): Answer<GithubProjectDetails, Throwable>
+
 }

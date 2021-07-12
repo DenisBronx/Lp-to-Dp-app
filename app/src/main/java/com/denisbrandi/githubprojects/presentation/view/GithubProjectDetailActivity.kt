@@ -3,7 +3,9 @@ package com.denisbrandi.githubprojects.presentation.view
 import android.content.*
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.denisbrandi.githubprojects.presentation.viewmodel.GithubProjectDetailsViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class GithubProjectDetailActivity : AppCompatActivity() {
@@ -20,6 +22,9 @@ class GithubProjectDetailActivity : AppCompatActivity() {
             }
         }
     }
+
+    @Inject
+    lateinit var githubProjectDetailsViewModel: GithubProjectDetailsViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

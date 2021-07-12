@@ -1,6 +1,6 @@
 package com.denisbrandi.githubprojects.factory
 
-import com.denisbrandi.githubprojects.data.mapper.GithubProjectMapper
+import com.denisbrandi.githubprojects.data.mapper.*
 import com.denisbrandi.githubprojects.data.remote.GithubProjectApiService
 import com.denisbrandi.githubprojects.data.repository.RealGithubProjectRepository
 import com.denisbrandi.githubprojects.domain.repository.GithubProjectRepository
@@ -20,7 +20,8 @@ internal object GithubProjectSingletonModule {
     fun provideGithubProjectRepository(retrofit: Retrofit): GithubProjectRepository {
         return RealGithubProjectRepository(
             retrofit.create(GithubProjectApiService::class.java),
-            ListMapper(GithubProjectMapper::map)::map
+            ListMapper(GithubProjectMapper::map)::map,
+            GithubProjectDetailsMapper::map
         )
     }
 }
