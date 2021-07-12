@@ -2,7 +2,6 @@ package com.denisbrandi.prelude
 
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
-import org.mockito.kotlin.*
 
 class ListMapperTest {
 
@@ -13,12 +12,7 @@ class ListMapperTest {
         val output2 = Any()
     }
 
-    private val objectMapper: (input: Any) -> Any = mock {
-        on { invoke(input1) } doReturn output1
-        on { invoke(input2) } doReturn output2
-    }
-
-    private val sut = ListMapper(objectMapper)
+    private val sut = ListMapper(FakeObjectMapper::invoke)
 
     @Test
     fun `map SHOULD return empty list WHEN input list is empty`() {
@@ -39,5 +33,13 @@ class ListMapperTest {
         val result = sut.map(listOf(input1, input2))
 
         assertThat(result).isEqualTo(listOf(output1, output2))
+    }
+
+    private object FakeObjectMapper {
+        private val map = mapOf(
+            input1 to output1,
+            input2 to output2
+        )
+        fun invoke(input: Any): Any = map[input]!!
     }
 }
