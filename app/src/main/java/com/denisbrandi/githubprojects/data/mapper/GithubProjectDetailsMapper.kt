@@ -8,8 +8,10 @@ object GithubProjectDetailsMapper {
     fun map(jsonGithubProjectDetails: JsonGithubProjectDetails): GithubProjectDetails {
         return GithubProjectDetails(
             id = jsonGithubProjectDetails.id,
-            name = jsonGithubProjectDetails.fullName.orEmpty(),
-            description = jsonGithubProjectDetails.description.orEmpty()
+            name = jsonGithubProjectDetails.name.orEmpty(),
+            fullName = jsonGithubProjectDetails.fullName.orEmpty(),
+            description = jsonGithubProjectDetails.description.orEmpty(),
+            imageUrl = jsonGithubProjectDetails.owner?.avatarUrl.orEmpty()
         )
     }
 

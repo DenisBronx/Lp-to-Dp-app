@@ -1,7 +1,6 @@
 package com.denisbrandi.githubprojects.presentation.view
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,8 +23,11 @@ class GithubProjectsListActivity : AppCompatActivity() {
     lateinit var projectsListRouter: ProjectsListRouter
 
     private lateinit var binding: ActivityProjectsListBinding
-    private val adapter: GithubProjectsAdapter = GithubProjectsAdapter {
-        projectsListRouter.openProjectDetail(binding.organisationInput.text.toString(), it.id)
+    private val adapter: GithubProjectsAdapter = GithubProjectsAdapter { project ->
+        projectsListRouter.openProjectDetail(
+            binding.organisationInput.text.toString(),
+            project.name
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,7 +36,7 @@ class GithubProjectsListActivity : AppCompatActivity() {
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
 
-        githubProjectsListViewModel.state.flowWhenStarted(this) { state -> drawState(state) }
+        observeViewModelState()
 
         binding.loadDataButton.setOnClickListener {
             githubProjectsListViewModel.loadProjects(binding.organisationInput.text.toString())
@@ -48,22 +50,24 @@ class GithubProjectsListActivity : AppCompatActivity() {
         binding.projectsRecyclerView.adapter = adapter
     }
 
-    private fun drawState(state: GithubProjectsListViewModel.State) {
-        Log.d("newState", state.toString())
-        binding.spinner.isVisible = false
-        binding.errorMessage.isVisible = false
-        binding.projectsRecyclerView.isVisible = false
-        binding.retryButton.isVisible = false
+    private fun observeViewModelState() {
+        githubProjectsListViewModel.state.flowWhenStarted(this) { state ->
+            binding.infoMessage.isVisible = false
+            binding.spinner.isVisible = false
+            binding.errorMessage.isVisible = false
+            binding.projectsRecyclerView.isVisible = false
+            binding.retryButton.isVisible = false
+            adapter.submitList(emptyList())
 
-        when (state) {
-            is Loading -> binding.spinner.isVisible = true
-            is Content -> drawContentState(state.githubProjects)
-            is Error -> drawErrorMessage(state.getProjectsError)
-            is InvalidInput -> {
-                binding.errorMessage.isVisible = true
-                binding.errorMessage.text = getString(R.string.invalid_organisation_input)
-            }
-            else -> {
+            when (state) {
+                is Idle -> binding.infoMessage.isVisible = true
+                is Loading -> binding.spinner.isVisible = true
+                is Content -> drawContentState(state.githubProjects)
+                is Error -> drawErrorMessage(state.getProjectsError)
+                is InvalidInput -> {
+                    binding.errorMessage.isVisible = true
+                    binding.errorMessage.text = getString(R.string.invalid_organisation_input)
+                }
             }
         }
     }
@@ -88,6 +92,6 @@ class GithubProjectsListActivity : AppCompatActivity() {
     }
 
     interface ProjectsListRouter {
-        fun openProjectDetail(organisation: String, projectId: String)
+        fun openProjectDetail(organisation: String, projectName: String)
     }
 }

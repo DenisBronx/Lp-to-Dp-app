@@ -44,6 +44,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/organisation_input" />
 
+    <TextView
+        android:id="@+id/info_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/full_hint"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/organisation_input" />
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/retry_button"
         android:layout_width="wrap_content"
@@ -58,11 +69,11 @@
         android:id="@+id/spinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:indeterminate="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/organisation_input"
-        android:indeterminate="true"/>
+        app:layout_constraintTop_toTopOf="@+id/organisation_input" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/projects_recycler_view"

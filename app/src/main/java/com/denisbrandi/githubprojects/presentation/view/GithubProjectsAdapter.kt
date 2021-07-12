@@ -4,6 +4,7 @@ import android.view.*
 import androidx.recyclerview.widget.*
 import com.denisbrandi.githubprojects.databinding.ProjectListItemBinding
 import com.denisbrandi.githubprojects.domain.model.GithubProject
+import com.denisbrandi.imageloading.ImageLoader
 
 class GithubProjectsAdapter(
     private val onProjectClicked: (githubProject: GithubProject) -> Unit
@@ -25,9 +26,10 @@ class GithubProjectsAdapter(
         private val onProjectClicked: (githubProject: GithubProject) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(githubProject: GithubProject) {
-            binding.projectName.text = githubProject.name
+            binding.projectName.text = githubProject.fullName
             binding.projectDescription.text = githubProject.description
             binding.projectItemCardView.setOnClickListener { onProjectClicked(githubProject) }
+            ImageLoader.loadImage(binding.thumbnail, githubProject.imageUrl)
         }
     }
 }
