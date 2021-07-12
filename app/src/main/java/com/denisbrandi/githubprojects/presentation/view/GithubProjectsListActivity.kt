@@ -38,11 +38,14 @@ class GithubProjectsListActivity : AppCompatActivity() {
 
         observeViewModelState()
 
-        binding.loadDataButton.setOnClickListener {
-            githubProjectsListViewModel.loadProjects(binding.organisationInput.text.toString())
-        }
+        binding.loadDataButton.setOnClickListener { load() }
+        binding.retryButton.setOnClickListener { load() }
 
         setUpList()
+    }
+
+    private fun load() {
+        githubProjectsListViewModel.loadProjects(binding.organisationInput.text.toString())
     }
 
     private fun setUpList() {

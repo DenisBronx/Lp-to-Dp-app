@@ -52,6 +52,14 @@ class GithubProjectDetailActivity : AppCompatActivity() {
         setUpToolbar(repository)
 
         observeViewModel()
+
+        binding.retryButton.setOnClickListener {
+            load(organisation, repository)
+        }
+        load(organisation, repository)
+    }
+
+    private fun load(organisation: String, repository: String) {
         githubProjectDetailsViewModel.loadDetails(
             organisation,
             repository
@@ -94,8 +102,10 @@ class GithubProjectDetailActivity : AppCompatActivity() {
             getString(R.string.description).htmlText(githubProjectDetails.description)
         binding.labelUrl.text = getString(R.string.url).htmlLink(githubProjectDetails.url)
         binding.labelUrl.movementMethod = LinkMovementMethod.getInstance()
-        binding.labelStargazers.text = getString(R.string.stargazers).htmlText(githubProjectDetails.stargazers.toString())
-        binding.labelWatchers.text = getString(R.string.watchers).htmlText(githubProjectDetails.watchers.toString())
+        binding.labelStargazers.text =
+            getString(R.string.stargazers).htmlText(githubProjectDetails.stargazers.toString())
+        binding.labelWatchers.text =
+            getString(R.string.watchers).htmlText(githubProjectDetails.watchers.toString())
         ImageLoader.loadImage(binding.image, githubProjectDetails.imageUrl)
     }
 
