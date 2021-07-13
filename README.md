@@ -11,4 +11,4 @@ Some notes:
 * I used Coroutines as Asyncrhronous framework since this is the new recommeded way, I am a huge RxJava fan tho.
 
 How the app works:
-![](app_video.gif)
+![](app_gif.mp4)
