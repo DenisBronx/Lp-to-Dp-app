@@ -93,20 +93,22 @@ class GithubProjectDetailActivity : AppCompatActivity() {
 
     @SuppressLint("SetTextI18n")
     private fun drawContentState(githubProjectDetails: GithubProjectDetails) {
-        binding.content.isVisible = true
-        binding.labelId.text = getString(R.string.id).htmlText(githubProjectDetails.id)
-        binding.labelName.text = getString(R.string.name).htmlText(githubProjectDetails.name)
-        binding.labelFullName.text =
-            getString(R.string.full_name).htmlText(githubProjectDetails.fullName)
-        binding.labelDescription.text =
-            getString(R.string.description).htmlText(githubProjectDetails.description)
-        binding.labelUrl.text = getString(R.string.url).htmlLink(githubProjectDetails.url)
-        binding.labelUrl.movementMethod = LinkMovementMethod.getInstance()
-        binding.labelStargazers.text =
-            getString(R.string.stargazers).htmlText(githubProjectDetails.stargazers.toString())
-        binding.labelWatchers.text =
-            getString(R.string.watchers).htmlText(githubProjectDetails.watchers.toString())
-        ImageLoader.loadImage(binding.image, githubProjectDetails.imageUrl)
+        with(binding) {
+            content.isVisible = true
+            labelId.text = getString(R.string.id).htmlText(githubProjectDetails.id)
+            labelName.text = getString(R.string.name).htmlText(githubProjectDetails.name)
+            labelFullName.text =
+                getString(R.string.full_name).htmlText(githubProjectDetails.fullName)
+            labelDescription.text =
+                getString(R.string.description).htmlText(githubProjectDetails.description)
+            labelUrl.text = getString(R.string.url).htmlLink(githubProjectDetails.url)
+            labelUrl.movementMethod = LinkMovementMethod.getInstance()
+            labelStargazers.text =
+                getString(R.string.stargazers).htmlText(githubProjectDetails.stargazers.toString())
+            labelWatchers.text =
+                getString(R.string.watchers).htmlText(githubProjectDetails.watchers.toString())
+            ImageLoader.loadImage(image, githubProjectDetails.imageUrl)
+        }
     }
 
     private fun String.htmlText(value: String): Spanned {

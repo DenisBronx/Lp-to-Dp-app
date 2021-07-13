@@ -45,6 +45,7 @@ class GithubProjectsListActivity : AppCompatActivity() {
     }
 
     private fun load() {
+        hideKeyboard()
         githubProjectsListViewModel.loadProjects(binding.organisationInput.text.toString())
     }
 
