@@ -8,7 +8,7 @@ Some notes:
 * Code has been written after the tests in a pure TDD fashion
 * Tests have been written without the use of Mocking libraries since it is easy to create fakes when each unit depends on an abstract collaborator (as per DIP).
 * For the DI framework I used Dagger Hilt since it is the recommended way from Google, although I didn't use `@Inject` in class constructors because I consider it a coupling with the DI framework.
-* I used Coroutines as Asyncrhronous framework since this is the new recommeded way, I am a huge RxJava fan tho.
+* I used Coroutines as Asynchronous framework since this is the new recommeded way, I am a huge RxJava fan tho.
 
 How the app works:
 ![](app_video.gif)
