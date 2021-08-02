@@ -18,16 +18,18 @@ class RealGithubProjectRepository(
 
     override suspend fun getProjectsForOrganisation(organisation: String): Answer<List<GithubProject>, GetProjectsError> {
         return try {
-            val apiResult = githubProjectApiService.getProjectsForOrganisation(organisation)
+            with(coroutineScope) {
+                val apiResult = githubProjectApiService.getProjectsForOrganisation(organisation)
 
-            if (apiResult.isSuccessful) {
-                apiResult.body()?.let { Answer.Success(mapProjects(it)) }
-                    ?: Answer.Error(GetProjectsError.NoProjectFound)
-            } else {
-                if (apiResult.code() == 404) {
-                    Answer.Error(GetProjectsError.NoProjectFound)
+                if (apiResult.isSuccessful) {
+                    apiResult.body()?.let { Answer.Success(mapProjects(it)) }
+                        ?: Answer.Error(GetProjectsError.NoProjectFound)
                 } else {
-                    Answer.Error(GetProjectsError.GenericError)
+                    if (apiResult.code() == 404) {
+                        Answer.Error(GetProjectsError.NoProjectFound)
+                    } else {
+                        Answer.Error(GetProjectsError.GenericError)
+                    }
                 }
             }
         } catch (e: IOException) {
@@ -40,12 +42,14 @@ class RealGithubProjectRepository(
         repositoryName: String
     ): Answer<GithubProjectDetails, Throwable> {
         return try {
-            val apiResult = githubProjectApiService.getProjectDetails(owner, repositoryName)
-            if (apiResult.isSuccessful) {
-                apiResult.body()?.let { Answer.Success(mapProjectDetails(it)) }
-                    ?: Answer.Error(Throwable("Null body"))
-            } else {
-                Answer.Error(Throwable("Response error"))
+            with(coroutineScope) {
+                val apiResult = githubProjectApiService.getProjectDetails(owner, repositoryName)
+                if (apiResult.isSuccessful) {
+                    apiResult.body()?.let { Answer.Success(mapProjectDetails(it)) }
+                        ?: Answer.Error(Throwable("Null body"))
+                } else {
+                    Answer.Error(Throwable("Response error"))
+                }
             }
         } catch (e: IOException) {
             Answer.Error(e)
