@@ -6,6 +6,7 @@ import com.denisbrandi.githubprojects.domain.model.*
 import com.denisbrandi.githubprojects.domain.repository.GithubProjectRepository
 import com.denisbrandi.prelude.Answer
 import kotlinx.coroutines.*
+import java.io.IOException
 
 class RealGithubProjectRepository(
     private val githubProjectApiService: GithubProjectApiService,
@@ -16,7 +17,7 @@ class RealGithubProjectRepository(
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
     override suspend fun getProjectsForOrganisation(organisation: String): Answer<List<GithubProject>, GetProjectsError> {
-        return with(coroutineScope) {
+        return try {
             val apiResult = githubProjectApiService.getProjectsForOrganisation(organisation)
 
             if (apiResult.isSuccessful) {
@@ -29,6 +30,8 @@ class RealGithubProjectRepository(
                     Answer.Error(GetProjectsError.GenericError)
                 }
             }
+        } catch (e: IOException) {
+            Answer.Error(GetProjectsError.GenericError)
         }
     }
 
@@ -36,7 +39,7 @@ class RealGithubProjectRepository(
         owner: String,
         repositoryName: String
     ): Answer<GithubProjectDetails, Throwable> {
-        return with(coroutineScope) {
+        return try {
             val apiResult = githubProjectApiService.getProjectDetails(owner, repositoryName)
             if (apiResult.isSuccessful) {
                 apiResult.body()?.let { Answer.Success(mapProjectDetails(it)) }
@@ -44,6 +47,8 @@ class RealGithubProjectRepository(
             } else {
                 Answer.Error(Throwable("Response error"))
             }
+        } catch (e: IOException) {
+            Answer.Error(e)
         }
     }
 }

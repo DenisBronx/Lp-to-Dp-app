@@ -1,4 +1,4 @@
-package com.denisbrandi.githubprojects.factory
+package com.denisbrandi.factory
 
 import android.content.Context
 import com.denisbrandi.githubprojects.presentation.view.GithubProjectsListActivity

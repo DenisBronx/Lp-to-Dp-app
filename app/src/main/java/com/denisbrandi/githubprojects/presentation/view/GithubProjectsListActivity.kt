@@ -56,12 +56,7 @@ class GithubProjectsListActivity : AppCompatActivity() {
 
     private fun observeViewModelState() {
         githubProjectsListViewModel.state.flowWhenStarted(this) { state ->
-            binding.infoMessage.isVisible = false
-            binding.spinner.isVisible = false
-            binding.errorMessage.isVisible = false
-            binding.projectsRecyclerView.isVisible = false
-            binding.retryButton.isVisible = false
-            adapter.submitList(emptyList())
+            setDefaultViewsState()
 
             when (state) {
                 is Idle -> binding.infoMessage.isVisible = true
@@ -76,16 +71,25 @@ class GithubProjectsListActivity : AppCompatActivity() {
         }
     }
 
+    private fun setDefaultViewsState() {
+        binding.infoMessage.isVisible = false
+        binding.spinner.isVisible = false
+        binding.errorMessage.isVisible = false
+        binding.projectsRecyclerView.isVisible = false
+        binding.retryButton.isVisible = false
+        adapter.submitList(emptyList())
+    }
+
     private fun drawErrorMessage(getProjectsError: GetProjectsError) {
-        binding.errorMessage.isVisible = true
+        binding.infoMessage.isVisible = true
 
         when (getProjectsError) {
             is GetProjectsError.NoProjectFound -> {
-                binding.errorMessage.text = getString(R.string.no_projects_error_message)
+                binding.infoMessage.text = getString(R.string.no_projects_error_message)
             }
             is GetProjectsError.GenericError -> {
-                binding.errorMessage.text = getString(R.string.generic_projects_error_message)
                 binding.retryButton.isVisible = true
+                binding.infoMessage.text = getString(R.string.generic_projects_error_message)
             }
         }
     }
