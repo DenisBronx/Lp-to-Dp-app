@@ -7,18 +7,18 @@ import com.denisbrandi.githubprojects.domain.repository.GithubProjectRepository
 import com.denisbrandi.prelude.Answer
 import kotlinx.coroutines.*
 import java.io.IOException
+import kotlin.coroutines.CoroutineContext
 
 class RealGithubProjectRepository(
     private val githubProjectApiService: GithubProjectApiService,
     private val mapProjects: (jsonProjects: List<JsonGithubProject>) -> List<GithubProject>,
-    private val mapProjectDetails: (jsonProjectDetails: JsonGithubProjectDetails) -> GithubProjectDetails
+    private val mapProjectDetails: (jsonProjectDetails: JsonGithubProjectDetails) -> GithubProjectDetails,
+    private val coroutineContext: CoroutineContext = Dispatchers.IO
 ) : GithubProjectRepository {
-
-    private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
     override suspend fun getProjectsForOrganisation(organisation: String): Answer<List<GithubProject>, GetProjectsError> {
         return try {
-            with(coroutineScope) {
+            withContext(coroutineContext) {
                 val apiResult = githubProjectApiService.getProjectsForOrganisation(organisation)
 
                 if (apiResult.isSuccessful) {
@@ -42,7 +42,7 @@ class RealGithubProjectRepository(
         repositoryName: String
     ): Answer<GithubProjectDetails, Throwable> {
         return try {
-            with(coroutineScope) {
+            withContext(coroutineContext) {
                 val apiResult = githubProjectApiService.getProjectDetails(owner, repositoryName)
                 if (apiResult.isSuccessful) {
                     apiResult.body()?.let { Answer.Success(mapProjectDetails(it)) }

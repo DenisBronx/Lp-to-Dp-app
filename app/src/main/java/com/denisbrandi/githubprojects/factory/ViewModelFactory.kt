@@ -16,7 +16,7 @@ class ViewModelFactory {
     private class Provider<T : ViewModel>(
         private val createViewModel: () -> T
     ) : ViewModelProvider.Factory {
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return createViewModel() as T
         }
     }

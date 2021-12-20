@@ -3,15 +3,19 @@ package com.denisbrandi.githubprojects.data.repository
 import com.denisbrandi.githubprojects.data.model.*
 import com.denisbrandi.githubprojects.data.remote.GithubProjectApiService
 import com.denisbrandi.githubprojects.domain.model.*
-import com.denisbrandi.testutil.stubOrThrow
+import com.denisbrandi.testutil.*
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.runBlockingTest
 import okhttp3.ResponseBody
-import org.junit.Test
+import org.junit.*
 import retrofit2.Response
 import java.io.IOException
 
 class RealGithubProjectRepositoryTest {
+
+    @get:Rule
+    val coroutineRule = MainCoroutineRule()
 
     private companion object {
         const val ORGANISATION = "square"
@@ -27,7 +31,8 @@ class RealGithubProjectRepositoryTest {
     private val sut = RealGithubProjectRepository(
         fakeGithubProjectApiService,
         FakeMapperFacade::invoke,
-        FakeMapperFacade::invoke
+        FakeMapperFacade::invoke,
+        Dispatchers.Main
     )
 
     @Test
