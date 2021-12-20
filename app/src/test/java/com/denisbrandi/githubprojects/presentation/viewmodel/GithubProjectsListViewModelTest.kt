@@ -12,11 +12,6 @@ class GithubProjectsListViewModelTest {
     @get:Rule
     val mainCoroutineRule = MainCoroutineRule()
 
-    private companion object {
-        const val ORGANISATION = "square"
-        val dummyProjects = listOf(GithubProject(id = "1"), GithubProject(id = "2"))
-    }
-
     private val fakeGetProjectsForOrganisation = FakeGetProjectsForOrganisation()
     private val sut = GithubProjectsListViewModel(
         fakeGetProjectsForOrganisation::invoke,
@@ -25,7 +20,7 @@ class GithubProjectsListViewModelTest {
     private val stateObserver = sut.state.test()
 
     @Test
-    fun `loadProjects SHOULD emit Content state WHEN use case is successful`() {
+    fun `EXPECT Content state WHEN use case is successful`() {
         fakeGetProjectsForOrganisation.result = Answer.Success(dummyProjects)
 
         sut.loadProjects(ORGANISATION)
@@ -34,7 +29,7 @@ class GithubProjectsListViewModelTest {
     }
 
     @Test
-    fun `loadProjects SHOULD emit Error state WHEN use case returns error`() {
+    fun `EXPECT Error state WHEN use case returns error`() {
         fakeGetProjectsForOrganisation.result = Answer.Error(GetProjectsError.NoProjectFound)
 
         sut.loadProjects(ORGANISATION)
@@ -43,12 +38,17 @@ class GithubProjectsListViewModelTest {
     }
 
     @Test
-    fun `loadProjects SHOULD emit InvalidInput WHEN organisation is empty`() {
+    fun `EXPECT InvalidInput WHEN organisation is empty`() {
         fakeGetProjectsForOrganisation.result = Answer.Error(GetProjectsError.NoProjectFound)
 
         sut.loadProjects("")
 
         stateObserver.assertValues(Idle, InvalidInput)
+    }
+
+    private companion object {
+        const val ORGANISATION = "square"
+        val dummyProjects = listOf(GithubProject(id = "1"), GithubProject(id = "2"))
     }
 
     private class FakeGetProjectsForOrganisation {

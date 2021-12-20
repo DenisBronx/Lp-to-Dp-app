@@ -8,13 +8,6 @@ import org.junit.*
 
 class GithubProjectDetailsViewModelTest {
 
-    private companion object {
-        const val OWNER = "square"
-        const val REPOSITORY = "plastic"
-
-        val githubProjectDetails = GithubProjectDetails(id = "1")
-    }
-
     @get:Rule
     val mainCoroutineRule = MainCoroutineRule()
 
@@ -23,7 +16,7 @@ class GithubProjectDetailsViewModelTest {
     private val stateObserver = sut.state.test()
 
     @Test
-    fun `loadDetails SHOULD emit Content state WHEN use case is successful`() {
+    fun `EXPECT Content state WHEN use case is successful`() {
         fakeGetProjectDetails.result = Answer.Success(githubProjectDetails)
 
         sut.loadDetails(OWNER, REPOSITORY)
@@ -32,7 +25,7 @@ class GithubProjectDetailsViewModelTest {
     }
 
     @Test
-    fun `loadDetails SHOULD emit Error state WHEN use case is not successful`() {
+    fun `EXPECT Error state WHEN use case is not successful`() {
         fakeGetProjectDetails.result = Answer.Error(Throwable())
 
         sut.loadDetails(OWNER, REPOSITORY)
@@ -45,9 +38,16 @@ class GithubProjectDetailsViewModelTest {
 
         fun invoke(owner: String, repository: String): Answer<GithubProjectDetails, Throwable> {
             return stubOrThrow(
-                isValidInvocation = owner + repository == OWNER + REPOSITORY,
+                isValidInvocation = listOf(owner, repository) == listOf(OWNER, REPOSITORY),
                 result = result
             )
         }
+    }
+
+    private companion object {
+        const val OWNER = "square"
+        const val REPOSITORY = "plastic"
+
+        val githubProjectDetails = GithubProjectDetails(id = "1")
     }
 }

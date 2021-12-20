@@ -5,34 +5,34 @@ import org.junit.Test
 
 class ListMapperTest {
 
-    private companion object {
-        val input1 = Any()
-        val input2 = Any()
-        val output1 = Any()
-        val output2 = Any()
-    }
-
     private val sut = ListMapper(FakeObjectMapper::invoke)
 
     @Test
-    fun `map SHOULD return empty list WHEN input list is empty`() {
+    fun `EXPECT empty list WHEN input list is empty`() {
         val result = sut.map(emptyList())
 
         assertThat(result).isEmpty()
     }
 
     @Test
-    fun `map SHOULD return list of 1 WHEN input list has 1 item`() {
+    fun `EXPECT list of 1 WHEN input list has 1 item`() {
         val result = sut.map(listOf(input1))
 
         assertThat(result).isEqualTo(listOf(output1))
     }
 
     @Test
-    fun `map SHOULD return list of 2 WHEN input list has 2 items`() {
+    fun `EXPECT list of 2 WHEN input list has 2 items`() {
         val result = sut.map(listOf(input1, input2))
 
         assertThat(result).isEqualTo(listOf(output1, output2))
+    }
+
+    private companion object {
+        val input1 = Any()
+        val input2 = Any()
+        val output1 = Any()
+        val output2 = Any()
     }
 
     private object FakeObjectMapper {

@@ -17,16 +17,6 @@ class RealGithubProjectRepositoryTest {
     @get:Rule
     val coroutineRule = MainCoroutineRule()
 
-    private companion object {
-        const val ORGANISATION = "square"
-        const val REPOSITORY = "plastic"
-
-        val githubProjectsDTO = listOf(JsonGithubProject(id = "1"), JsonGithubProject(id = "2"))
-        val githubProjects = listOf(GithubProject(id = "1"), GithubProject(id = "2"))
-        val githubProjectDetailsDTO = JsonGithubProjectDetails(id = "1")
-        val githubProjectDetails = GithubProjectDetails(id = "1")
-    }
-
     private val fakeGithubProjectApiService = FakeGithubProjectApiService()
     private val sut = RealGithubProjectRepository(
         fakeGithubProjectApiService,
@@ -36,7 +26,7 @@ class RealGithubProjectRepositoryTest {
     )
 
     @Test
-    fun `getProjectsForOrganisation SHOULD return mapped result WHEN api is successful`() =
+    fun `EXPECT mapped githubProjects WHEN api is successful`() =
         runBlockingTest {
             fakeGithubProjectApiService.getProjectsForOrganisationResult =
                 { Response.success(githubProjectsDTO) }
@@ -47,7 +37,7 @@ class RealGithubProjectRepositoryTest {
         }
 
     @Test
-    fun `getProjectsForOrganisation SHOULD return NoProjectFound WHEN api is successful but body is null`() =
+    fun `EXPECT NoProjectFound WHEN api is successful but body is null`() =
         runBlockingTest {
             fakeGithubProjectApiService.getProjectsForOrganisationResult =
                 { Response.success(null) }
@@ -58,7 +48,7 @@ class RealGithubProjectRepositoryTest {
         }
 
     @Test
-    fun `getProjectsForOrganisation SHOULD return NoProjectFound WHEN api is not successful because of 404`() =
+    fun `EXPECT NoProjectFound WHEN api is not successful because of 404`() =
         runBlockingTest {
             fakeGithubProjectApiService.getProjectsForOrganisationResult =
                 { Response.error(404, ResponseBody.create(null, "")) }
@@ -69,7 +59,7 @@ class RealGithubProjectRepositoryTest {
         }
 
     @Test
-    fun `getProjectsForOrganisation SHOULD return GenericError WHEN api is not successful because of generic error`() =
+    fun `EXPECT GenericError WHEN api is not successful because of generic error`() =
         runBlockingTest {
             fakeGithubProjectApiService.getProjectsForOrganisationResult =
                 { Response.error(500, ResponseBody.create(null, "")) }
@@ -80,7 +70,7 @@ class RealGithubProjectRepositoryTest {
         }
 
     @Test
-    fun `getProjectsForOrganisation SHOULD return GenericError WHEN api is not successful because of exception`() =
+    fun `EXPECT GenericError WHEN api is not successful because of exception`() =
         runBlockingTest {
             fakeGithubProjectApiService.getProjectsForOrganisationResult = { throw IOException() }
 
@@ -90,7 +80,7 @@ class RealGithubProjectRepositoryTest {
         }
 
     @Test
-    fun `getProjectDetails SHOULD return mapped result WHEN api is successful`() = runBlockingTest {
+    fun `EXPECT mapped githubProjectDetails WHEN api is successful`() = runBlockingTest {
         fakeGithubProjectApiService.getProjectDetailsResult = {
             Response.success(githubProjectDetailsDTO)
         }
@@ -101,7 +91,7 @@ class RealGithubProjectRepositoryTest {
     }
 
     @Test
-    fun `getProjectDetails SHOULD return error WHEN api is successful but body is null`() =
+    fun `EXPECT error WHEN api is successful but body is null`() =
         runBlockingTest {
             fakeGithubProjectApiService.getProjectDetailsResult = { Response.success(null) }
 
@@ -111,7 +101,7 @@ class RealGithubProjectRepositoryTest {
         }
 
     @Test
-    fun `getProjectDetails SHOULD return error WHEN api is not successful`() =
+    fun `EXPECT error WHEN api is not successful`() =
         runBlockingTest {
             fakeGithubProjectApiService.getProjectDetailsResult = {
                 Response.error(500, ResponseBody.create(null, ""))
@@ -123,7 +113,7 @@ class RealGithubProjectRepositoryTest {
         }
 
     @Test
-    fun `getProjectDetails SHOULD return error WHEN api is not successful because of exception`() =
+    fun `EXPECT error WHEN api is not successful because of exception`() =
         runBlockingTest {
             val reason = IOException()
             fakeGithubProjectApiService.getProjectDetailsResult = {
@@ -134,6 +124,16 @@ class RealGithubProjectRepositoryTest {
 
             assertThat(result.asError().reason).isEqualTo(reason)
         }
+
+    private companion object {
+        const val ORGANISATION = "square"
+        const val REPOSITORY = "plastic"
+
+        val githubProjectsDTO = listOf(JsonGithubProject(id = "1"), JsonGithubProject(id = "2"))
+        val githubProjects = listOf(GithubProject(id = "1"), GithubProject(id = "2"))
+        val githubProjectDetailsDTO = JsonGithubProjectDetails(id = "1")
+        val githubProjectDetails = GithubProjectDetails(id = "1")
+    }
 
     private class FakeGithubProjectApiService : GithubProjectApiService {
         lateinit var getProjectsForOrganisationResult: () -> Response<List<JsonGithubProject>>
@@ -151,7 +151,7 @@ class RealGithubProjectRepositoryTest {
             repository: String
         ): Response<JsonGithubProjectDetails> {
             return stubOrThrow(
-                isValidInvocation = owner + repository == ORGANISATION + REPOSITORY,
+                isValidInvocation = listOf(owner, repository) == listOf(ORGANISATION, REPOSITORY),
                 result = getProjectDetailsResult()
             )
         }
@@ -160,14 +160,14 @@ class RealGithubProjectRepositoryTest {
     private object FakeMapperFacade {
         fun invoke(jsonProjects: List<JsonGithubProject>): List<GithubProject> {
             return stubOrThrow(
-                isValidInvocation = jsonProjects == githubProjectsDTO,
+                isValidInvocation = jsonProjects === githubProjectsDTO,
                 result = githubProjects
             )
         }
 
         fun invoke(jsonGithubProjectDetails: JsonGithubProjectDetails): GithubProjectDetails {
             return stubOrThrow(
-                isValidInvocation = jsonGithubProjectDetails == githubProjectDetailsDTO,
+                isValidInvocation = jsonGithubProjectDetails === githubProjectDetailsDTO,
                 result = githubProjectDetails
             )
         }

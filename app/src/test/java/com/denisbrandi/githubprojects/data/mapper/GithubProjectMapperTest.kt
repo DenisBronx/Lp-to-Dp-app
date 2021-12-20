@@ -9,7 +9,7 @@ class GithubProjectMapperTest {
     private val sut = GithubProjectMapper
 
     @Test
-    fun `map SHOULD map provided values`() {
+    fun `EXPECT values properly mapped WHEN there are no nulls`() {
         val input =
             JsonGithubProject(
                 id = "id",
@@ -31,7 +31,7 @@ class GithubProjectMapperTest {
     }
 
     @Test
-    fun `map SHOULD map null values to defaults`() {
+    fun `EXPECT default values WHEN fields are null`() {
         val input = JsonGithubProject("id")
 
         val result = sut.map(input)
