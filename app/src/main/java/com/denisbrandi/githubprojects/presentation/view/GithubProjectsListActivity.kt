@@ -17,10 +17,10 @@ import javax.inject.Inject
 class GithubProjectsListActivity : AppCompatActivity() {
 
     @Inject
-    lateinit var githubProjectsListViewModel: GithubProjectsListViewModel
+    internal lateinit var githubProjectsListViewModel: GithubProjectsListViewModel
 
     @Inject
-    lateinit var projectsListRouter: ProjectsListRouter
+    internal lateinit var projectsListRouter: ProjectsListRouter
 
     private lateinit var binding: ActivityProjectsListBinding
     private val adapter: GithubProjectsAdapter = GithubProjectsAdapter { project ->

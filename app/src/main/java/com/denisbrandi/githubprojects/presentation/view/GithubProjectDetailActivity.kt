@@ -38,7 +38,7 @@ class GithubProjectDetailActivity : AppCompatActivity() {
     }
 
     @Inject
-    lateinit var githubProjectDetailsViewModel: GithubProjectDetailsViewModel
+    internal lateinit var githubProjectDetailsViewModel: GithubProjectDetailsViewModel
     private lateinit var binding: ActivityProjectDetailsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -17,14 +17,14 @@ internal object GithubProjectSingletonModule {
 
     @Provides
     @Singleton
-    fun provideGithubProjectRepository(retrofit: Retrofit): GithubProjectDIProvider {
+    fun provideGithubProjectProvider(retrofit: Retrofit): GithubProjectDIProvider {
         return GithubProjectDIProvider(retrofit)
     }
 }
 
 @Module
 @InstallIn(ActivityComponent::class)
-object GithubProjectActivityModule {
+internal object GithubProjectActivityModule {
 
     @Provides
     fun provideGithubProjectsListViewModel(

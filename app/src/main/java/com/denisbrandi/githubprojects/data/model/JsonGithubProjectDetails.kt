@@ -2,7 +2,7 @@ package com.denisbrandi.githubprojects.data.model
 
 import com.squareup.moshi.Json
 
-data class JsonGithubProjectDetails(
+internal data class JsonGithubProjectDetails(
     @field:Json(name = "id") val id: String,
     @field:Json(name = "name") val name: String? = null,
     @field:Json(name = "full_name") val fullName: String? = null,

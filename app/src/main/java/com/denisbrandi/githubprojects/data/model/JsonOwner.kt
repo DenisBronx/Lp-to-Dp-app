@@ -2,6 +2,6 @@ package com.denisbrandi.githubprojects.data.model
 
 import com.squareup.moshi.Json
 
-data class JsonOwner(
+internal data class JsonOwner(
     @field:Json(name = "avatar_url") val avatarUrl: String? = null
 )

@@ -3,7 +3,7 @@ package com.denisbrandi.githubprojects.data.mapper
 import com.denisbrandi.githubprojects.data.model.JsonGithubProjectDetails
 import com.denisbrandi.githubprojects.domain.model.GithubProjectDetails
 
-object GithubProjectDetailsMapper {
+internal object GithubProjectDetailsMapper {
 
     fun map(jsonGithubProjectDetails: JsonGithubProjectDetails): GithubProjectDetails {
         return GithubProjectDetails(

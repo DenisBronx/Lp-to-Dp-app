@@ -7,7 +7,7 @@ import com.denisbrandi.githubprojects.presentation.viewmodel.GithubProjectDetail
 import com.denisbrandi.githubprojects.presentation.viewmodel.GithubProjectDetailsViewModel.State.*
 import kotlinx.coroutines.launch
 
-class GithubProjectDetailsViewModel(
+internal class GithubProjectDetailsViewModel(
     private val getProjectDetails: GetProjectDetails
 ) : BaseViewModel<State>(Idle) {
 

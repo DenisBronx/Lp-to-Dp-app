@@ -1,6 +1,6 @@
 package com.denisbrandi.githubprojects.domain.model
 
-data class GithubProjectDetails(
+internal data class GithubProjectDetails(
     val id: String,
     val name: String = "",
     val fullName: String = "",

@@ -4,7 +4,7 @@ import com.denisbrandi.githubprojects.data.model.*
 import retrofit2.Response
 import retrofit2.http.*
 
-interface GithubProjectApiService {
+internal interface GithubProjectApiService {
 
     @GET("orgs/{organisation}/repos")
     suspend fun getProjectsForOrganisation(

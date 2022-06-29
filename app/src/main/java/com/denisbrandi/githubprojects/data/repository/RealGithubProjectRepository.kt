@@ -9,7 +9,7 @@ import kotlinx.coroutines.*
 import java.io.IOException
 import kotlin.coroutines.CoroutineContext
 
-class RealGithubProjectRepository(
+internal class RealGithubProjectRepository(
     private val githubProjectApiService: GithubProjectApiService,
     private val mapProjects: (jsonProjects: List<JsonGithubProject>) -> List<GithubProject>,
     private val mapProjectDetails: (jsonProjectDetails: JsonGithubProjectDetails) -> GithubProjectDetails,

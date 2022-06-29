@@ -9,7 +9,7 @@ import com.denisbrandi.githubprojects.presentation.viewmodel.*
 import com.denisbrandi.prelude.ListMapper
 import retrofit2.Retrofit
 
-class GithubProjectDIProvider(
+internal class GithubProjectDIProvider(
     private val retrofit: Retrofit
 ) {
 

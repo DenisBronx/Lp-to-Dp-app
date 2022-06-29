@@ -6,7 +6,7 @@ import com.denisbrandi.githubprojects.databinding.ProjectListItemBinding
 import com.denisbrandi.githubprojects.domain.model.GithubProject
 import com.denisbrandi.imageloading.ImageLoader
 
-class GithubProjectsAdapter(
+internal class GithubProjectsAdapter(
     private val onProjectClicked: (githubProject: GithubProject) -> Unit
 ) : ListAdapter<GithubProject, GithubProjectsAdapter.ViewHolder>(ItemDiffCallback()) {
 

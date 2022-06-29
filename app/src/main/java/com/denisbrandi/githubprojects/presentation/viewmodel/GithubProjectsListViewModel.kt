@@ -7,7 +7,7 @@ import com.denisbrandi.githubprojects.presentation.viewmodel.GithubProjectsListV
 import com.denisbrandi.githubprojects.presentation.viewmodel.GithubProjectsListViewModel.State.*
 import kotlinx.coroutines.launch
 
-class GithubProjectsListViewModel(
+internal class GithubProjectsListViewModel(
     private val getProjectsForOrganisation: GetProjectsForOrganisation,
     private val isValidOrganisation: (organisation: String) -> Boolean
 ) : BaseViewModel<State>(Idle) {
