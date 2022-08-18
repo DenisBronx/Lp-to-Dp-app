@@ -5,6 +5,7 @@ import com.denisbrandi.githubprojects.data.mapper.*
 import com.denisbrandi.githubprojects.data.remote.GithubProjectApiService
 import com.denisbrandi.githubprojects.data.repository.RealGithubProjectRepository
 import com.denisbrandi.githubprojects.domain.service.OrganisationValidator
+import com.denisbrandi.githubprojects.domain.usecase.*
 import com.denisbrandi.githubprojects.presentation.viewmodel.*
 import com.denisbrandi.prelude.ListMapper
 import retrofit2.Retrofit
@@ -21,18 +22,18 @@ internal class GithubProjectDIProvider(
         )
     }
 
-    internal val getProjectsForOrganisation by lazy {
-        return@lazy githubProjectRepository::getProjectsForOrganisation
+    private val getProjectsForOrganisation by lazy {
+        GetProjectsForOrganisation(githubProjectRepository::getProjectsForOrganisation)
     }
 
-    internal val getProjectDetails by lazy {
-        return@lazy githubProjectRepository::getProjectDetails
+    private val getProjectDetails by lazy {
+        GetProjectDetails(githubProjectRepository::getProjectDetails)
     }
 
     internal fun provideGithubProjectsListViewModel(activity: AppCompatActivity): GithubProjectsListViewModel {
         return activity.getViewModel {
             GithubProjectsListViewModel(
-                githubProjectRepository::getProjectsForOrganisation,
+                getProjectsForOrganisation,
                 OrganisationValidator::isValidOrganisation
             )
         }
@@ -40,9 +41,7 @@ internal class GithubProjectDIProvider(
 
     internal fun provideGithubProjectDetailsViewModel(activity: AppCompatActivity): GithubProjectDetailsViewModel {
         return activity.getViewModel {
-            GithubProjectDetailsViewModel(
-                githubProjectRepository::getProjectDetails
-            )
+            GithubProjectDetailsViewModel(getProjectDetails)
         }
     }
 
