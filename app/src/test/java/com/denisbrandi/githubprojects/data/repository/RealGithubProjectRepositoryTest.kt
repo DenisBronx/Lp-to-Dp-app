@@ -6,7 +6,7 @@ import com.denisbrandi.githubprojects.domain.model.*
 import com.denisbrandi.testutil.*
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import okhttp3.ResponseBody
 import org.junit.*
 import retrofit2.Response
@@ -26,61 +26,56 @@ class RealGithubProjectRepositoryTest {
     )
 
     @Test
-    fun `EXPECT mapped githubProjects WHEN api is successful`() =
-        runBlockingTest {
-            fakeGithubProjectApiService.getProjectsForOrganisationResult =
-                { Response.success(githubProjectsDTO) }
+    fun `EXPECT mapped githubProjects WHEN api is successful`() = runTest {
+        fakeGithubProjectApiService.getProjectsForOrganisationResult =
+            { Response.success(githubProjectsDTO) }
 
-            val result = sut.getProjectsForOrganisation(ORGANISATION)
+        val result = sut.getProjectsForOrganisation(ORGANISATION)
 
-            assertThat(result.asSuccess().data).isEqualTo(githubProjects)
-        }
-
-    @Test
-    fun `EXPECT NoProjectFound WHEN api is successful but body is null`() =
-        runBlockingTest {
-            fakeGithubProjectApiService.getProjectsForOrganisationResult =
-                { Response.success(null) }
-
-            val result = sut.getProjectsForOrganisation(ORGANISATION)
-
-            assertThat(result.asError().reason).isEqualTo(GetProjectsError.NoProjectFound)
-        }
+        assertThat(result.asSuccess().data).isEqualTo(githubProjects)
+    }
 
     @Test
-    fun `EXPECT NoProjectFound WHEN api is not successful because of 404`() =
-        runBlockingTest {
-            fakeGithubProjectApiService.getProjectsForOrganisationResult =
-                { Response.error(404, ResponseBody.create(null, "")) }
+    fun `EXPECT NoProjectFound WHEN api is successful but body is null`() = runTest {
+        fakeGithubProjectApiService.getProjectsForOrganisationResult =
+            { Response.success(null) }
 
-            val result = sut.getProjectsForOrganisation(ORGANISATION)
+        val result = sut.getProjectsForOrganisation(ORGANISATION)
 
-            assertThat(result.asError().reason).isEqualTo(GetProjectsError.NoProjectFound)
-        }
-
-    @Test
-    fun `EXPECT GenericError WHEN api is not successful because of generic error`() =
-        runBlockingTest {
-            fakeGithubProjectApiService.getProjectsForOrganisationResult =
-                { Response.error(500, ResponseBody.create(null, "")) }
-
-            val result = sut.getProjectsForOrganisation(ORGANISATION)
-
-            assertThat(result.asError().reason).isEqualTo(GetProjectsError.GenericError)
-        }
+        assertThat(result.asError().reason).isEqualTo(GetProjectsError.NoProjectFound)
+    }
 
     @Test
-    fun `EXPECT GenericError WHEN api is not successful because of exception`() =
-        runBlockingTest {
-            fakeGithubProjectApiService.getProjectsForOrganisationResult = { throw IOException() }
+    fun `EXPECT NoProjectFound WHEN api is not successful because of 404`() = runTest {
+        fakeGithubProjectApiService.getProjectsForOrganisationResult =
+            { Response.error(404, ResponseBody.create(null, "")) }
 
-            val result = sut.getProjectsForOrganisation(ORGANISATION)
+        val result = sut.getProjectsForOrganisation(ORGANISATION)
 
-            assertThat(result.asError().reason).isEqualTo(GetProjectsError.GenericError)
-        }
+        assertThat(result.asError().reason).isEqualTo(GetProjectsError.NoProjectFound)
+    }
 
     @Test
-    fun `EXPECT mapped githubProjectDetails WHEN api is successful`() = runBlockingTest {
+    fun `EXPECT GenericError WHEN api is not successful because of generic error`() = runTest {
+        fakeGithubProjectApiService.getProjectsForOrganisationResult =
+            { Response.error(500, ResponseBody.create(null, "")) }
+
+        val result = sut.getProjectsForOrganisation(ORGANISATION)
+
+        assertThat(result.asError().reason).isEqualTo(GetProjectsError.GenericError)
+    }
+
+    @Test
+    fun `EXPECT GenericError WHEN api is not successful because of exception`() = runTest {
+        fakeGithubProjectApiService.getProjectsForOrganisationResult = { throw IOException() }
+
+        val result = sut.getProjectsForOrganisation(ORGANISATION)
+
+        assertThat(result.asError().reason).isEqualTo(GetProjectsError.GenericError)
+    }
+
+    @Test
+    fun `EXPECT mapped githubProjectDetails WHEN api is successful`() = runTest {
         fakeGithubProjectApiService.getProjectDetailsResult = {
             Response.success(githubProjectDetailsDTO)
         }
@@ -91,39 +86,36 @@ class RealGithubProjectRepositoryTest {
     }
 
     @Test
-    fun `EXPECT error WHEN api is successful but body is null`() =
-        runBlockingTest {
-            fakeGithubProjectApiService.getProjectDetailsResult = { Response.success(null) }
+    fun `EXPECT error WHEN api is successful but body is null`() = runTest {
+        fakeGithubProjectApiService.getProjectDetailsResult = { Response.success(null) }
 
-            val result = sut.getProjectDetails(ORGANISATION, REPOSITORY)
+        val result = sut.getProjectDetails(ORGANISATION, REPOSITORY)
 
-            assertThat(result.isError()).isTrue()
-        }
-
-    @Test
-    fun `EXPECT error WHEN api is not successful`() =
-        runBlockingTest {
-            fakeGithubProjectApiService.getProjectDetailsResult = {
-                Response.error(500, ResponseBody.create(null, ""))
-            }
-
-            val result = sut.getProjectDetails(ORGANISATION, REPOSITORY)
-
-            assertThat(result.isError()).isTrue()
-        }
+        assertThat(result.isError()).isTrue()
+    }
 
     @Test
-    fun `EXPECT error WHEN api is not successful because of exception`() =
-        runBlockingTest {
-            val reason = IOException()
-            fakeGithubProjectApiService.getProjectDetailsResult = {
-                throw reason
-            }
-
-            val result = sut.getProjectDetails(ORGANISATION, REPOSITORY)
-
-            assertThat(result.asError().reason).isEqualTo(reason)
+    fun `EXPECT error WHEN api is not successful`() = runTest {
+        fakeGithubProjectApiService.getProjectDetailsResult = {
+            Response.error(500, ResponseBody.create(null, ""))
         }
+
+        val result = sut.getProjectDetails(ORGANISATION, REPOSITORY)
+
+        assertThat(result.isError()).isTrue()
+    }
+
+    @Test
+    fun `EXPECT error WHEN api is not successful because of exception`() = runTest {
+        val reason = IOException()
+        fakeGithubProjectApiService.getProjectDetailsResult = {
+            throw reason
+        }
+
+        val result = sut.getProjectDetails(ORGANISATION, REPOSITORY)
+
+        assertThat(result.asError().reason).isEqualTo(reason)
+    }
 
     private companion object {
         const val ORGANISATION = "square"

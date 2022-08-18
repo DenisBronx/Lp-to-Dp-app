@@ -1,3 +1,5 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package com.denisbrandi.githubprojects.factory
 
 import androidx.appcompat.app.AppCompatActivity
@@ -20,7 +22,6 @@ class ViewModelFactory {
             return createViewModel() as T
         }
     }
-
 }
 
 inline fun <reified T : ViewModel> AppCompatActivity.getViewModel(noinline provideViewModel: () -> T): T {
