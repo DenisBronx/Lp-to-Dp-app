@@ -1,6 +1,7 @@
 package com.denisbrandi.githubprojects.presentation.viewmodel
 
 import com.denisbrandi.githubprojects.domain.model.GithubProjectDetails
+import com.denisbrandi.githubprojects.domain.usecase.GetProjectDetails
 import com.denisbrandi.githubprojects.presentation.viewmodel.GithubProjectDetailsViewModel.State.*
 import com.denisbrandi.prelude.Answer
 import com.denisbrandi.testutil.*
@@ -12,16 +13,16 @@ class GithubProjectDetailsViewModelTest {
     val mainCoroutineRule = MainCoroutineRule()
 
     private val fakeGetProjectDetails = FakeGetProjectDetails()
-    private val sut = GithubProjectDetailsViewModel(fakeGetProjectDetails::invoke)
+    private val sut = GithubProjectDetailsViewModel(fakeGetProjectDetails)
     private val stateObserver = sut.state.test()
 
     @Test
     fun `EXPECT Content state WHEN use case is successful`() {
-        fakeGetProjectDetails.result = Answer.Success(githubProjectDetails)
+        fakeGetProjectDetails.result = Answer.Success(DETAILS)
 
         sut.loadDetails(OWNER, REPOSITORY)
 
-        stateObserver.assertValues(Idle, Loading, Content(githubProjectDetails))
+        stateObserver.assertValues(Idle, Loading, Content(DETAILS))
     }
 
     @Test
@@ -33,12 +34,15 @@ class GithubProjectDetailsViewModelTest {
         stateObserver.assertValues(Idle, Loading, Error)
     }
 
-    private class FakeGetProjectDetails {
+    private class FakeGetProjectDetails : GetProjectDetails {
         lateinit var result: Answer<GithubProjectDetails, Throwable>
 
-        fun invoke(owner: String, repository: String): Answer<GithubProjectDetails, Throwable> {
+        override suspend fun invoke(
+            owner: String,
+            projectName: String
+        ): Answer<GithubProjectDetails, Throwable> {
             return stubOrThrow(
-                isValidInvocation = listOf(owner, repository) == listOf(OWNER, REPOSITORY),
+                isValidInvocation = listOf(owner, projectName) == listOf(OWNER, REPOSITORY),
                 result = result
             )
         }
@@ -48,6 +52,6 @@ class GithubProjectDetailsViewModelTest {
         const val OWNER = "square"
         const val REPOSITORY = "plastic"
 
-        val githubProjectDetails = GithubProjectDetails(id = "1")
+        val DETAILS = GithubProjectDetails(id = "1")
     }
 }

@@ -1,7 +1,7 @@
 package com.denisbrandi.githubprojects.data.repository
 
+import com.denisbrandi.githubprojects.data.api.fakes.FakeGithubProjectApiService
 import com.denisbrandi.githubprojects.data.model.*
-import com.denisbrandi.githubprojects.data.remote.GithubProjectApiService
 import com.denisbrandi.githubprojects.domain.model.*
 import com.denisbrandi.testutil.*
 import com.google.common.truth.Truth.assertThat
@@ -17,7 +17,7 @@ class RealGithubProjectRepositoryTest {
     @get:Rule
     val coroutineRule = MainCoroutineRule()
 
-    private val fakeGithubProjectApiService = FakeGithubProjectApiService()
+    private val fakeGithubProjectApiService = FakeGithubProjectApiService(ORGANISATION, REPOSITORY)
     private val sut = RealGithubProjectRepository(
         fakeGithubProjectApiService,
         FakeMapperFacade::invoke,
@@ -133,28 +133,6 @@ class RealGithubProjectRepositoryTest {
         val githubProjects = listOf(GithubProject(id = "1"), GithubProject(id = "2"))
         val githubProjectDetailsDTO = JsonGithubProjectDetails(id = "1")
         val githubProjectDetails = GithubProjectDetails(id = "1")
-    }
-
-    private class FakeGithubProjectApiService : GithubProjectApiService {
-        lateinit var getProjectsForOrganisationResult: () -> Response<List<JsonGithubProject>>
-        lateinit var getProjectDetailsResult: () -> Response<JsonGithubProjectDetails>
-
-        override suspend fun getProjectsForOrganisation(organisation: String): Response<List<JsonGithubProject>> {
-            return stubOrThrow(
-                isValidInvocation = organisation == ORGANISATION,
-                result = getProjectsForOrganisationResult()
-            )
-        }
-
-        override suspend fun getProjectDetails(
-            owner: String,
-            repository: String
-        ): Response<JsonGithubProjectDetails> {
-            return stubOrThrow(
-                isValidInvocation = listOf(owner, repository) == listOf(ORGANISATION, REPOSITORY),
-                result = getProjectDetailsResult()
-            )
-        }
     }
 
     private object FakeMapperFacade {
