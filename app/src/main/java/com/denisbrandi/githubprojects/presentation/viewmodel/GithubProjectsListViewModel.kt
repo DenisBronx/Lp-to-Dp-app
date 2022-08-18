@@ -33,12 +33,12 @@ internal class GithubProjectsListViewModel(
         }
     }
 
-    sealed class State {
-        object Idle : State()
-        object Loading : State()
-        data class Content(val githubProjects: List<GithubProject>) : State()
-        data class Error(val getProjectsError: GetProjectsError) : State()
-        object InvalidInput : State()
+    sealed interface State {
+        object Idle : State
+        object Loading : State
+        data class Content(val githubProjects: List<GithubProject>) : State
+        data class Error(val getProjectsError: GetProjectsError) : State
+        object InvalidInput : State
     }
 
 }

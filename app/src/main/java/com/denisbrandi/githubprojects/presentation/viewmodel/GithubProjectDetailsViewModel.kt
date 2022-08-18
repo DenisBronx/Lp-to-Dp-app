@@ -26,11 +26,11 @@ internal class GithubProjectDetailsViewModel(
         }
     }
 
-    sealed class State {
-        object Idle : State()
-        object Loading : State()
-        data class Content(val githubProjectDetails: GithubProjectDetails) : State()
-        object Error : State()
+    sealed interface State {
+        object Idle : State
+        object Loading : State
+        data class Content(val githubProjectDetails: GithubProjectDetails) : State
+        object Error : State
     }
 
 }
