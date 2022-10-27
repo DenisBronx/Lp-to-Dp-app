@@ -6,6 +6,7 @@ import com.denisbrandi.githubprojects.domain.usecase.GetProjectsForOrganisation
 import com.denisbrandi.githubprojects.presentation.viewmodel.GithubProjectsListViewModel.State.*
 import com.denisbrandi.prelude.Answer
 import com.denisbrandi.testutil.*
+import kotlinx.coroutines.awaitCancellation
 import org.junit.*
 
 class GithubProjectsListViewModelTest {
@@ -21,8 +22,17 @@ class GithubProjectsListViewModelTest {
     private val stateObserver = sut.state.test()
 
     @Test
+    fun `EXPECT Loading state WHEN waiting for use case result`() {
+        fakeGetProjectsForOrganisation.result = { awaitCancellation() }
+
+        sut.loadProjects(ORGANISATION)
+
+        stateObserver.assertValues(Idle, Loading)
+    }
+
+    @Test
     fun `EXPECT Content state WHEN use case is successful`() {
-        fakeGetProjectsForOrganisation.result = Answer.Success(PROJECTS)
+        fakeGetProjectsForOrganisation.result = { Answer.Success(PROJECTS) }
 
         sut.loadProjects(ORGANISATION)
 
@@ -31,7 +41,7 @@ class GithubProjectsListViewModelTest {
 
     @Test
     fun `EXPECT Error state WHEN use case returns error`() {
-        fakeGetProjectsForOrganisation.result = Answer.Error(GetProjectsError.NoProjectFound)
+        fakeGetProjectsForOrganisation.result = { Answer.Error(GetProjectsError.NoProjectFound) }
 
         sut.loadProjects(ORGANISATION)
 
@@ -40,7 +50,7 @@ class GithubProjectsListViewModelTest {
 
     @Test
     fun `EXPECT InvalidInput WHEN organisation is empty`() {
-        fakeGetProjectsForOrganisation.result = Answer.Error(GetProjectsError.NoProjectFound)
+        fakeGetProjectsForOrganisation.result = { Answer.Error(GetProjectsError.NoProjectFound) }
 
         sut.loadProjects("")
 
@@ -53,12 +63,12 @@ class GithubProjectsListViewModelTest {
     }
 
     private class FakeGetProjectsForOrganisation : GetProjectsForOrganisation {
-        lateinit var result: Answer<List<GithubProject>, GetProjectsError>
+        lateinit var result: suspend () -> Answer<List<GithubProject>, GetProjectsError>
 
         override suspend fun invoke(organisation: String): Answer<List<GithubProject>, GetProjectsError> {
             return stubOrThrow(
                 isValidInvocation = organisation == ORGANISATION,
-                result = result
+                result = result()
             )
         }
     }

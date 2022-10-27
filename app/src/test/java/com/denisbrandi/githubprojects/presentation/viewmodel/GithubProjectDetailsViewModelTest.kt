@@ -5,6 +5,7 @@ import com.denisbrandi.githubprojects.domain.usecase.GetProjectDetails
 import com.denisbrandi.githubprojects.presentation.viewmodel.GithubProjectDetailsViewModel.State.*
 import com.denisbrandi.prelude.Answer
 import com.denisbrandi.testutil.*
+import kotlinx.coroutines.awaitCancellation
 import org.junit.*
 
 class GithubProjectDetailsViewModelTest {
@@ -17,8 +18,17 @@ class GithubProjectDetailsViewModelTest {
     private val stateObserver = sut.state.test()
 
     @Test
+    fun `EXPECT Loading state WHEN waiting for use case result`() {
+        fakeGetProjectDetails.result = { awaitCancellation() }
+
+        sut.loadDetails(OWNER, REPOSITORY)
+
+        stateObserver.assertValues(Idle, Loading)
+    }
+
+    @Test
     fun `EXPECT Content state WHEN use case is successful`() {
-        fakeGetProjectDetails.result = Answer.Success(DETAILS)
+        fakeGetProjectDetails.result = { Answer.Success(DETAILS) }
 
         sut.loadDetails(OWNER, REPOSITORY)
 
@@ -27,7 +37,7 @@ class GithubProjectDetailsViewModelTest {
 
     @Test
     fun `EXPECT Error state WHEN use case is not successful`() {
-        fakeGetProjectDetails.result = Answer.Error(Throwable())
+        fakeGetProjectDetails.result = { Answer.Error(Throwable()) }
 
         sut.loadDetails(OWNER, REPOSITORY)
 
@@ -35,7 +45,7 @@ class GithubProjectDetailsViewModelTest {
     }
 
     private class FakeGetProjectDetails : GetProjectDetails {
-        lateinit var result: Answer<GithubProjectDetails, Throwable>
+        lateinit var result: suspend () -> Answer<GithubProjectDetails, Throwable>
 
         override suspend fun invoke(
             owner: String,
@@ -43,7 +53,7 @@ class GithubProjectDetailsViewModelTest {
         ): Answer<GithubProjectDetails, Throwable> {
             return stubOrThrow(
                 isValidInvocation = listOf(owner, projectName) == listOf(OWNER, REPOSITORY),
-                result = result
+                result = result()
             )
         }
     }
