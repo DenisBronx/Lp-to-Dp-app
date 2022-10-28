@@ -2,6 +2,7 @@
 
 package com.denisbrandi.githubprojects.presentation.view
 
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
@@ -92,9 +93,10 @@ private fun ContentBuilder(
 private fun ContentDetails(githubProjectDetails: GithubProjectDetails) {
     Column(
         modifier = Modifier
-            .padding(horizontal = defaultMargin, vertical = halfMargin)
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .verticalScroll(ScrollState(0)),
         content = {
+            Spacer(modifier = Modifier.height(defaultMargin))
             ContentImage(githubProjectDetails.imageUrl)
             ContentText(stringResource(R.string.id), githubProjectDetails.id)
             ContentText(stringResource(R.string.name), githubProjectDetails.name)
@@ -106,6 +108,7 @@ private fun ContentDetails(githubProjectDetails: GithubProjectDetails) {
                 githubProjectDetails.stargazers.toString()
             )
             ContentText(stringResource(R.string.watchers), githubProjectDetails.watchers.toString())
+            Spacer(modifier = Modifier.height(defaultMargin))
         }
     )
 }
@@ -126,7 +129,11 @@ private fun ColumnScope.ContentImage(imageUrl: String) {
 private fun ContentText(labelName: String, labelValue: String) {
     val text = getContentString(labelName, labelValue)
     val spanStyle = getContentSpanStyle(labelName, text)
-    Text(text = AnnotatedString(text, listOf(spanStyle)))
+    Text(
+        modifier = Modifier.padding(horizontal = defaultMargin),
+        text = AnnotatedString(text, listOf(spanStyle)),
+        style = MaterialTheme.typography.headlineMedium
+    )
 }
 
 private fun getContentString(labelName: String, labelValue: String) = "$labelName\n$labelValue"
@@ -144,10 +151,12 @@ private fun getContentSpanStyle(
 @Composable
 private fun ContentLink(labelName: String, labelValue: String) {
     val text = getContentString(labelName, labelValue)
-    val spanStyle = getContentSpanStyle(labelName, text, Color.Blue)
+    val spanStyle = getContentSpanStyle(labelName, text, colorResource(R.color.teal_200))
     val uriHandler = LocalUriHandler.current
     ClickableText(
+        modifier = Modifier.padding(horizontal = defaultMargin),
         text = AnnotatedString(text, listOf(spanStyle)),
+        style = MaterialTheme.typography.headlineSmall,
         onClick = {
             if (it > labelName.length) {
                 uriHandler.openUri(labelValue)
