@@ -15,4 +15,6 @@
     <string name="watchers">Watchers:</string>
     <string name="full_hint">Insert an organisation name with at least 2 chars</string>
     <string name="search">Search</string>
+    <string name="back">Back</string>
+    <string name="repository_image">Repository Image</string>
 </resources>

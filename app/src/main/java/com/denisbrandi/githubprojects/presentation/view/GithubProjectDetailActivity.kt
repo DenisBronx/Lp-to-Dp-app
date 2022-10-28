@@ -7,6 +7,7 @@ import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.util.Log
 import android.view.MenuItem
+import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.text.HtmlCompat
 import androidx.core.text.HtmlCompat.FROM_HTML_MODE_COMPACT
@@ -43,11 +44,22 @@ class GithubProjectDetailActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityProjectDetailsBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
         val organisation = intent.getStringExtra(ORGANISATION_EXTRA)!!
         val repository = intent.getStringExtra(PROJECT_EXTRA)!!
+
+        setContent {
+            GithubProjectDetailView(
+                githubProjectDetailsViewModel = githubProjectDetailsViewModel,
+                organisation = organisation,
+                repository = repository,
+                onBack = { finish() }
+            )
+        }
+    }
+
+    private fun oldLayout(organisation: String, repository: String) {
+        binding = ActivityProjectDetailsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         setUpToolbar(repository)
 
