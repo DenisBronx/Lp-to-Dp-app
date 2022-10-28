@@ -14,7 +14,10 @@ fun RetryErrorView(onRetry: () -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         content = {
-            Text(text = stringResource(id = R.string.generic_projects_error_message))
+            Text(
+                modifier = Modifier.padding(defaultMargin),
+                text = stringResource(id = R.string.generic_projects_error_message)
+            )
             Button(
                 onClick = { onRetry() },
                 content = { Text(text = stringResource(R.string.retry)) })
