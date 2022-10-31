@@ -1,11 +1,13 @@
 package com.denisbrandi.githubprojects.presentation.view
 
 import android.os.Bundle
+import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.denisbrandi.githubprojects.R
-import com.denisbrandi.githubprojects.databinding.ActivityProjectsListBinding
+import com.denisbrandi.githubprojects.databinding.*
 import com.denisbrandi.githubprojects.domain.model.*
 import com.denisbrandi.githubprojects.presentation.viewmodel.GithubProjectsListViewModel
 import com.denisbrandi.githubprojects.presentation.viewmodel.GithubProjectsListViewModel.State.*
@@ -22,6 +24,7 @@ class GithubProjectsListActivity : AppCompatActivity() {
     @Inject
     internal lateinit var projectsListRouter: ProjectsListRouter
 
+    private lateinit var hybridBinding: ActivityProjectListHybridBinding
     private lateinit var binding: ActivityProjectsListBinding
     private val adapter: GithubProjectsAdapter = GithubProjectsAdapter { project ->
         projectsListRouter.openProjectDetail(
@@ -32,6 +35,52 @@ class GithubProjectsListActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        //newLayout()
+        hybridLayout()
+        //oldLayout()
+    }
+
+    private fun hybridLayout() {
+        hybridBinding = ActivityProjectListHybridBinding.inflate(layoutInflater)
+        setContentView(hybridBinding.root)
+        setSupportActionBar(hybridBinding.toolbar)
+        val retry = {
+            hideKeyboard()
+            githubProjectsListViewModel.loadProjects(hybridBinding.organisationInput.text.toString())
+        }
+        hybridBinding.loadDataButton.setOnClickListener { retry() }
+        hybridBinding.composeView.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                Content(
+                    githubProjectsListViewModel = githubProjectsListViewModel,
+                    onProjectClicked = { githubProject ->
+                        projectsListRouter.openProjectDetail(
+                            hybridBinding.organisationInput.text.toString(),
+                            githubProject.name
+                        )
+                    },
+                    onRetry = {
+                        retry()
+                    }
+                )
+            }
+        }
+    }
+
+    private fun newLayout() {
+        setContent {
+            GithubProjectsListView(
+                githubProjectsListViewModel,
+                onProjectClicked = { githubProject ->
+                    //projectsListRouter.openProjectDetail(organization, repository)
+                },
+                onRetry = {}
+            )
+        }
+    }
+
+    private fun oldLayout() {
         binding = ActivityProjectsListBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
