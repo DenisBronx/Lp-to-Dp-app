@@ -2,8 +2,11 @@
 
 package com.denisbrandi.githubprojects.presentation.view
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -21,49 +24,92 @@ import com.denisbrandi.githubprojects.presentation.viewmodel.GithubProjectsListV
 @Composable
 internal inline fun GithubProjectsListView(
     githubProjectsListViewModel: GithubProjectsListViewModel,
-    crossinline onProjectClicked: (githubProject: GithubProject) -> Unit,
-    crossinline onRetry: () -> Unit
+    crossinline onProjectClicked: (organization: String, repository: String) -> Unit
 ) {
+    var organizationText by rememberSaveable { mutableStateOf("") }
     Scaffold(
-        topBar = { TopBar() },
+        topBar = {
+            TopBar(
+                organizationText = organizationText,
+                onOrganizationChange = { organizationText = it },
+                onLoadClick = { githubProjectsListViewModel.loadProjects(organizationText) }
+            )
+        },
         content = { padding ->
             Box(
                 modifier = Modifier
                     .padding(padding)
                     .fillMaxWidth()
             ) {
-                Content(githubProjectsListViewModel, onProjectClicked, onRetry)
+                Content(
+                    githubProjectsListViewModel = githubProjectsListViewModel,
+                    onProjectClicked = { githubProject ->
+                        onProjectClicked(organizationText, githubProject.name)
+                    },
+                    onRetry = { githubProjectsListViewModel.loadProjects(organizationText) }
+                )
             }
         }
     )
 }
 
 @Composable
-private fun TopBar() {
-    var text by rememberSaveable { mutableStateOf("") }
-    TopAppBar(
-        modifier = Modifier.statusBarsPadding(),
-        colors = TopAppBarDefaults.mediumTopAppBarColors(containerColor = colorResource(R.color.purple_700)),
-        title = {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = defaultMargin),
-                content = {
+private fun TopBar(
+    organizationText: String,
+    onOrganizationChange: (String) -> Unit,
+    onLoadClick: () -> Unit
+) {
+    Column(
+        modifier = Modifier.background(colorResource(R.color.purple_500))
+    ) {
+        TopAppBar(
+            colors = TopAppBarDefaults.mediumTopAppBarColors(containerColor = colorResource(R.color.purple_500)),
+            title = {
+                Text(
+                    text = stringResource(R.string.app_name),
+                    color = Color.White,
+                )
+            },
+        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            TextField(
+                modifier = Modifier.padding(bottom = defaultMargin),
+                textStyle = MaterialTheme.typography.bodyLarge,
+                placeholder = {
                     Text(
-                        modifier = Modifier.padding(vertical = defaultMargin),
-                        text = stringResource(R.string.app_name),
-                        color = Color.White,
+                        modifier = Modifier.padding(noMargin),
+                        text = stringResource(id = R.string.enter_organisation_name),
+                        color = Color.White
                     )
-                    TextField(
-                        value = text,
-                        colors = TextFieldDefaults.textFieldColors(containerColor = Color.Transparent),
-                        onValueChange = { text = it }
-                    )
-                }
+                },
+                value = organizationText,
+                colors = TextFieldDefaults.textFieldColors(
+                    containerColor = Color.Transparent,
+                    cursorColor = colorResource(R.color.teal_200),
+                    focusedIndicatorColor = colorResource(R.color.teal_200),
+                    unfocusedIndicatorColor = colorResource(R.color.teal_200),
+                    textColor = Color.White
+                ),
+                onValueChange = onOrganizationChange
             )
-        },
-    )
+            FloatingActionButton(
+                modifier = Modifier.padding(horizontal = defaultMargin),
+                shape = FloatingActionButtonDefaults.largeShape,
+                containerColor = colorResource(R.color.teal_200),
+                content = {
+                    Icon(
+                        imageVector = Icons.Outlined.Search,
+                        contentDescription = stringResource(R.string.search),
+                        tint = Color.White
+                    )
+                },
+                onClick = onLoadClick
+            )
+        }
+    }
 }
 
 @Composable
@@ -73,12 +119,11 @@ internal inline fun Content(
     crossinline onRetry: () -> Unit
 ) {
     val uiState by githubProjectsListViewModel.state.collectAsState()
-    ContentBuilder(githubProjectsListViewModel, uiState, onProjectClicked, onRetry)
+    ContentBuilder(uiState, onProjectClicked, onRetry)
 }
 
 @Composable
 private inline fun ContentBuilder(
-    githubProjectsListViewModel: GithubProjectsListViewModel,
     state: GithubProjectsListViewModel.State,
     crossinline onProjectClicked: (githubProject: GithubProject) -> Unit,
     crossinline onRetry: () -> Unit
